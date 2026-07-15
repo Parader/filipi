@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199770121581",
+    "project_id": "filipi-boa",
+    "storage_bucket": "filipi-boa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199770121581:android:b378c953a7b87af55b6664",
+        "android_client_info": {
+          "package_name": "com.filipiboats.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjUNPxW2-KLnZNlB9TL-4hZENy9AzCs1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

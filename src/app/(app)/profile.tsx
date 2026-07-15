@@ -5,6 +5,7 @@ import { ScrollView, View } from "react-native";
 import { MOCK_PROFILE_STATS, getDisplayName, getInitials } from "@/lib/user-display";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/auth-provider";
+import { usePushNotifications } from "@/providers/push-notifications-provider";
 
 function StatCard({ label, value, testID }: { label: string; value: string | number; testID: string }): JSX.Element {
   return (
@@ -19,7 +20,9 @@ function StatCard({ label, value, testID }: { label: string; value: string | num
 
 export default function ProfileScreen(): JSX.Element {
   const { session } = useAuth();
+  const { statusMessage, registerPush, sendTestPush, status } = usePushNotifications();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [pushFeedback, setPushFeedback] = useState<string | null>(null);
   const email = session?.user.email ?? null;
   const displayName = getDisplayName(session);
   const initials = getInitials(displayName);
@@ -58,6 +61,48 @@ export default function ProfileScreen(): JSX.Element {
         <StatCard label="Day streak" value={MOCK_PROFILE_STATS.streak} testID="profile-stat-streak" />
         <StatCard label="XP" value={MOCK_PROFILE_STATS.xp} testID="profile-stat-xp" />
         <StatCard label="Rank" value={`#${MOCK_PROFILE_STATS.rank}`} testID="profile-stat-rank" />
+      </View>
+
+      <View className="gap-3">
+        <Typography.Heading className="text-base">Push notifications</Typography.Heading>
+        <Typography.Paragraph testID="profile-push-status" className="text-muted text-sm">
+          {statusMessage}
+        </Typography.Paragraph>
+        {pushFeedback ? (
+          <Typography.Paragraph testID="profile-push-feedback" className="text-sm">
+            {pushFeedback}
+          </Typography.Paragraph>
+        ) : null}
+        <Button
+          variant="secondary"
+          testID="profile-push-register-button"
+          accessibilityLabel="Register for push notifications"
+          accessibilityRole="button"
+          isDisabled={status === "registering" || status === "test_sending"}
+          onPress={() => {
+            setPushFeedback(null);
+            void registerPush().then(() => {
+              setPushFeedback("Push registration attempted.");
+            });
+          }}
+        >
+          {status === "registering" ? "Registering…" : "Register push"}
+        </Button>
+        <Button
+          variant="secondary"
+          testID="profile-push-test-button"
+          accessibilityLabel="Send test push notification"
+          accessibilityRole="button"
+          isDisabled={status !== "registered" || status === "test_sending"}
+          onPress={() => {
+            setPushFeedback(null);
+            void sendTestPush().then((result) => {
+              setPushFeedback(result.error ? result.error : "Test push sent.");
+            });
+          }}
+        >
+          {status === "test_sending" ? "Sending…" : "Send test push"}
+        </Button>
       </View>
 
       <Button

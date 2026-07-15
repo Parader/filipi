@@ -77,6 +77,35 @@ jest.mock("uniwind", () => ({
   withUniwind: (Component) => Component,
 }));
 
+jest.mock("expo-notifications", () => ({
+  setNotificationHandler: jest.fn(),
+  setNotificationChannelAsync: jest.fn(),
+  getPermissionsAsync: jest.fn().mockResolvedValue({ status: "granted" }),
+  requestPermissionsAsync: jest.fn().mockResolvedValue({ status: "granted" }),
+  getExpoPushTokenAsync: jest.fn().mockResolvedValue({ data: "ExponentPushToken[test]" }),
+  addNotificationReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  AndroidImportance: { DEFAULT: 3 },
+}));
+
+jest.mock("expo-device", () => ({
+  isDevice: false,
+  deviceName: "Jest Device",
+}));
+
+jest.mock("expo-constants", () => ({
+  __esModule: true,
+  default: {
+    expoConfig: {
+      extra: {
+        eas: {
+          projectId: "f36902ba-6be7-4499-a4e9-cada0a82d321",
+        },
+      },
+    },
+  },
+}));
+
 jest.mock("@/lib/supabase", () => ({
   isSupabaseConfigured: () => true,
   getSupabaseConfigError: () => null,
@@ -85,10 +114,17 @@ jest.mock("@/lib/supabase", () => ({
       signInWithPassword: jest.fn(),
       signUp: jest.fn(),
       signOut: jest.fn(),
+      getUser: jest.fn().mockResolvedValue({ data: { user: { id: "user-1" } }, error: null }),
       getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
       onAuthStateChange: jest.fn(() => ({
         data: { subscription: { unsubscribe: jest.fn() } },
       })),
+    },
+    from: jest.fn(() => ({
+      upsert: jest.fn().mockResolvedValue({ error: null }),
+    })),
+    functions: {
+      invoke: jest.fn().mockResolvedValue({ data: { ok: true }, error: null }),
     },
   },
 }));

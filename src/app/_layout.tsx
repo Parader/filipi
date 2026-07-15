@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { getAuthRedirectPath } from "@/lib/auth-redirect";
 import { AuthProvider, useAuth } from "@/providers/auth-provider";
+import { PushNotificationsProvider } from "@/providers/push-notifications-provider";
 
 import "../global.css";
 
@@ -44,7 +45,9 @@ export default function RootLayout(): JSX.Element {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HeroUINativeProvider config={{ devInfo: { stylingPrinciples: false } }}>
         <AuthProvider>
-          <RootNavigator />
+          <PushNotificationsProvider>
+            <RootNavigator />
+          </PushNotificationsProvider>
         </AuthProvider>
       </HeroUINativeProvider>
     </GestureHandlerRootView>

@@ -38,6 +38,10 @@ yarn-error.*
 .env*.local
 .env.maestro
 
+# Firebase (service account private keys — never commit)
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+
 # Test coverage
 coverage/
 

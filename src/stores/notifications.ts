@@ -6,6 +6,7 @@ export type AppNotification = {
   body: string;
   read: boolean;
   createdAt: string;
+  source?: "seed" | "push";
 };
 
 export const SEED_NOTIFICATIONS: AppNotification[] = [
@@ -51,6 +52,7 @@ type NotificationsState = {
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   resetNotifications: () => void;
+  addNotification: (notification: AppNotification) => void;
 };
 
 export const selectUnreadCount = (state: NotificationsState): number =>
@@ -72,4 +74,11 @@ export const useNotificationsStore = create<NotificationsState>((set) => ({
       })),
     })),
   resetNotifications: () => set({ notifications: SEED_NOTIFICATIONS }),
+  addNotification: (notification) =>
+    set((state) => {
+      const withoutDuplicate = state.notifications.filter((item) => item.id !== notification.id);
+      return {
+        notifications: [notification, ...withoutDuplicate],
+      };
+    }),
 }));

@@ -33,6 +33,10 @@ jest.mock("@/providers/auth-provider", () => ({
   useAuth: jest.fn(),
 }));
 
+jest.mock("@/providers/push-notifications-provider", () => ({
+  PushNotificationsProvider: ({ children }: { children: ReactNode }) => children,
+}));
+
 const useAuth = jest.requireMock("@/providers/auth-provider").useAuth as jest.Mock;
 
 describe("RootLayout auth gate", () => {

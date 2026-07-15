@@ -38,4 +38,30 @@ describe("useNotificationsStore", () => {
 
     expect(selectUnreadCount(useNotificationsStore.getState())).toBe(0);
   });
+
+  test("prepends push notifications without duplicates", () => {
+    useNotificationsStore.getState().addNotification({
+      id: "push-1",
+      title: "Test push",
+      body: "Hello from Expo",
+      read: false,
+      createdAt: "2026-07-15T12:00:00.000Z",
+      source: "push",
+    });
+
+    expect(useNotificationsStore.getState().notifications[0]?.id).toBe("push-1");
+    expect(selectUnreadCount(useNotificationsStore.getState())).toBe(4);
+
+    useNotificationsStore.getState().addNotification({
+      id: "push-1",
+      title: "Test push updated",
+      body: "Updated body",
+      read: false,
+      createdAt: "2026-07-15T12:01:00.000Z",
+      source: "push",
+    });
+
+    expect(useNotificationsStore.getState().notifications).toHaveLength(SEED_NOTIFICATIONS.length + 1);
+    expect(useNotificationsStore.getState().notifications[0]?.title).toBe("Test push updated");
+  });
 });

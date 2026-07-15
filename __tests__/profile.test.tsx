@@ -14,6 +14,16 @@ jest.mock("@/providers/auth-provider", () => ({
   }),
 }));
 
+jest.mock("@/providers/push-notifications-provider", () => ({
+  usePushNotifications: () => ({
+    status: "simulator",
+    expoPushToken: null,
+    statusMessage: "Push notifications require a physical device (not an emulator).",
+    registerPush: jest.fn(),
+    sendTestPush: jest.fn(),
+  }),
+}));
+
 describe("ProfileScreen", () => {
   test("renders profile identity and mock stats", async () => {
     await render(<ProfileScreen />);
@@ -24,5 +34,7 @@ describe("ProfileScreen", () => {
     expect(screen.getByTestId("profile-stat-streak-value")).toHaveTextContent("5");
     expect(screen.getByTestId("profile-stat-xp-value")).toHaveTextContent("1250");
     expect(screen.getByTestId("profile-stat-rank-value")).toHaveTextContent("#42");
+    expect(screen.getByTestId("profile-push-status")).toBeTruthy();
+    expect(screen.getByTestId("profile-push-register-button")).toBeTruthy();
   });
 });
