@@ -1,0 +1,13 @@
+# Expo Go on device/simulator while `npx expo start` is running.
+# When you switch to a custom/dev build (Phase 7), change appId to the
+# value from app.json (e.g. com.filipiboats.app).
+appId: host.exp.exponent
+---
+- launchApp
+- assertVisible:
+    id: "welcome-screen"
+- assertVisible: "Filipi Boats"
+- assertVisible:
+    id: "welcome-get-started-button"
+- assertVisible:
+    id: "welcome-login-button"

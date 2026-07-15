@@ -1,0 +1,14 @@
+# Expo Go while `npx expo start` is running.
+appId: host.exp.exponent
+---
+- launchApp
+- assertVisible:
+    id: "welcome-screen"
+- assertVisible: "Filipi Boats"
+- assertVisible:
+    id: "welcome-login-button"
+- tapOn:
+    id: "welcome-login-button"
+- assertVisible:
+    id: "login-screen"
+- assertVisible: "Log in"
