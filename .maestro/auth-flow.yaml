@@ -1,0 +1,40 @@
+# Sign up → profile → sign out → log in again → sign out.
+appId: com.filipiboats.app
+---
+- runFlow: helpers/open-app.yaml
+- runFlow: helpers/sign-up.yaml
+- assertVisible:
+    id: "home-screen"
+- tapOn: "Profile"
+- assertVisible:
+    id: "profile-screen"
+- tapOn:
+    id: "profile-sign-out-button"
+- extendedWaitUntil:
+    visible:
+      id: "welcome-screen"
+    timeout: 20000
+- tapOn:
+    id: "welcome-login-button"
+- assertVisible:
+    id: "login-screen"
+- tapOn:
+    id: "login-email-input"
+- inputText: ${output.e2eEmail}
+- tapOn:
+    id: "login-password-input"
+- inputText: ${output.e2ePassword}
+- tapOn: "Welcome back. Sign in to continue training."
+- tapOn:
+    id: "login-submit-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+- tapOn: "Profile"
+- tapOn:
+    id: "profile-sign-out-button"
+- extendedWaitUntil:
+    visible:
+      id: "welcome-screen"
+    timeout: 20000

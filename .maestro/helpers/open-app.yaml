@@ -1,0 +1,50 @@
+# Shared boot helper used by auth / notifications / welcome flows.
+appId: com.filipiboats.app
+---
+- stopApp
+- launchApp:
+    appId: com.filipiboats.app
+    clearState: false
+
+- openLink:
+    link: "filipiboats://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8082%3FdisableOnboarding%3D1"
+    autoVerify: true
+
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Close"
+    commands:
+      - tapOn: "Close"
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - tapOn: "Reload"
+- runFlow:
+    when:
+      visible: "Close"
+    commands:
+      - tapOn: "Close"
+
+- runFlow:
+    when:
+      visible: "Enter URL manually"
+    commands:
+      - tapOn: "Enter URL manually"
+      - eraseText
+      - inputText: "http://10.0.2.2:8082"
+      - runFlow:
+          when:
+            visible: "Connect"
+          commands:
+            - tapOn: "Connect"
+
+- extendedWaitUntil:
+    visible:
+      id: "welcome-screen"
+    timeout: 90000

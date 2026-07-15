@@ -1,0 +1,19 @@
+# Sign up → notifications → mark all read → sign out.
+appId: com.filipiboats.app
+---
+- runFlow: helpers/open-app.yaml
+- runFlow: helpers/sign-up.yaml
+- tapOn: "Notifications"
+- assertVisible:
+    id: "notifications-screen"
+- assertVisible: "3 unread"
+- tapOn:
+    id: "notifications-mark-all-read"
+- assertVisible: "0 unread"
+- tapOn: "Profile"
+- tapOn:
+    id: "profile-sign-out-button"
+- extendedWaitUntil:
+    visible:
+      id: "welcome-screen"
+    timeout: 20000

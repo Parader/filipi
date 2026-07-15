@@ -1,32 +1,51 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { HeroUINativeProvider } from "heroui-native";
-import type { JSX } from "react";
+import { useEffect, type JSX } from "react";
+import { ActivityIndicator, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import { getAuthRedirectPath } from "@/lib/auth-redirect";
+import { AuthProvider, useAuth } from "@/providers/auth-provider";
 
 import "../global.css";
 
-/**
- * Always start on the public welcome screen until Phase 3 auth gating.
- * Without this, Expo Router may open `(app)` first (alphabetically before
- * `(public)`), which is why Android emulator showed tabs while iOS showed welcome.
- */
-export const unstable_settings = {
-  initialRouteName: "(public)",
-};
+function RootNavigator(): JSX.Element {
+  const { session, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
-/**
- * Root layout: providers only in Phase 0.
- * Phase 3 will add a Supabase session listener here to redirect between
- * `(public)` (welcome/login) and `(app)` (authenticated tabs).
- */
+  useEffect(() => {
+    const segmentGroup = segments[0];
+    const redirectPath = getAuthRedirectPath(session, isLoading, segmentGroup);
+
+    if (redirectPath) {
+      router.replace(redirectPath);
+    }
+  }, [session, isLoading, segments, router]);
+
+  if (isLoading) {
+    return (
+      <View testID="auth-loading" className="flex-1 bg-background items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(public)" />
+      <Stack.Screen name="(app)" />
+    </Stack>
+  );
+}
+
 export default function RootLayout(): JSX.Element {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HeroUINativeProvider config={{ devInfo: { stylingPrinciples: false } }}>
-        <Stack screenOptions={{ headerShown: false }} initialRouteName="(public)">
-          <Stack.Screen name="(public)" />
-          <Stack.Screen name="(app)" />
-        </Stack>
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
       </HeroUINativeProvider>
     </GestureHandlerRootView>
   );

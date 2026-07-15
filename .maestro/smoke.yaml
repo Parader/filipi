@@ -1,9 +1,65 @@
-# Expo Go on device/simulator while `npx expo start` is running.
-# When you switch to a custom/dev build (Phase 7), change appId to the
-# value from app.json (e.g. com.filipiboats.app).
-appId: host.exp.exponent
+# Smoke — development build only (not Expo Go).
+#
+# Prerequisites (Android emulator):
+#   1. Dev build installed:  npm run android:device
+#   2. Metro for this app:   npm run start:dev
+#   3. Port forward:         npm run e2e:prep
+#
+# NOTE: On this machine Docker often owns 8081, so Expo falls back to 8082.
+# Keep METRO_PORT in sync with whatever `npm run start:dev` prints.
+appId: com.filipiboats.app
 ---
-- launchApp
+- stopApp
+- launchApp:
+    appId: com.filipiboats.app
+    clearState: false
+
+# Emulator → host Metro (8082 when 8081 is occupied by Docker)
+- openLink:
+    link: "filipiboats://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8082%3FdisableOnboarding%3D1"
+    autoVerify: true
+
+# Dismiss Expo onboarding / error / menu overlays if present
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Close"
+    commands:
+      - tapOn: "Close"
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - tapOn: "Reload"
+- runFlow:
+    when:
+      visible: "Close"
+    commands:
+      - tapOn: "Close"
+
+# Manual launcher fallback
+- runFlow:
+    when:
+      visible: "Enter URL manually"
+    commands:
+      - tapOn: "Enter URL manually"
+      - eraseText
+      - inputText: "http://10.0.2.2:8082"
+      - runFlow:
+          when:
+            visible: "Connect"
+          commands:
+            - tapOn: "Connect"
+
+- extendedWaitUntil:
+    visible:
+      id: "welcome-screen"
+    timeout: 90000
+
 - assertVisible:
     id: "welcome-screen"
 - assertVisible: "Filipi Boats"

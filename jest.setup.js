@@ -2,24 +2,42 @@
 
 jest.mock("heroui-native", () => {
   const React = require("react");
-  const { Pressable, Text, View } = require("react-native");
+  const { Pressable, Text, TextInput, View } = require("react-native");
 
   const MockText = ({ children, ...props }) => React.createElement(Text, props, children);
 
-  const MockButton = ({ children, onPress, testID, accessibilityLabel, accessibilityRole, ...props }) =>
+  const MockButton = ({
+    children,
+    onPress,
+    testID,
+    accessibilityLabel,
+    accessibilityRole,
+    isDisabled,
+    ...props
+  }) =>
     React.createElement(
       Pressable,
       {
-        onPress,
+        onPress: isDisabled ? undefined : onPress,
         testID,
         accessibilityLabel,
         accessibilityRole: accessibilityRole ?? "button",
+        accessibilityState: { disabled: Boolean(isDisabled) },
         ...props,
       },
       typeof children === "string" ? React.createElement(Text, null, children) : children,
     );
 
   MockButton.Label = MockText;
+
+  const MockInput = ({ testID, accessibilityLabel, value, onChangeText, ...props }) =>
+    React.createElement(TextInput, {
+      testID,
+      accessibilityLabel,
+      value,
+      onChangeText,
+      ...props,
+    });
 
   return {
     HeroUINativeProvider: ({ children }) => React.createElement(View, null, children),
@@ -29,7 +47,16 @@ jest.mock("heroui-native", () => {
       Label: MockText,
     },
     Button: MockButton,
-    Card: ({ children, ...props }) => React.createElement(View, props, children),
+    Input: MockInput,
+    Card: ({ children, testID, ...props }) => React.createElement(View, { testID, ...props }, children),
+    Avatar: Object.assign(
+      ({ children, testID, ...props }) => React.createElement(View, { testID, ...props }, children),
+      {
+        Fallback: MockText,
+        Image: () => null,
+      },
+    ),
+    Chip: ({ children, testID, ...props }) => React.createElement(View, { testID, ...props }, children),
     useThemeColor: () => "#000000",
   };
 });
@@ -48,4 +75,20 @@ jest.mock("react-native-worklets", () => ({
 jest.mock("uniwind", () => ({
   useUniwind: () => ({ theme: "light" }),
   withUniwind: (Component) => Component,
+}));
+
+jest.mock("@/lib/supabase", () => ({
+  isSupabaseConfigured: () => true,
+  getSupabaseConfigError: () => null,
+  supabase: {
+    auth: {
+      signInWithPassword: jest.fn(),
+      signUp: jest.fn(),
+      signOut: jest.fn(),
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      })),
+    },
+  },
 }));

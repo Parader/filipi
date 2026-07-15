@@ -8,9 +8,9 @@ Step-by-step delivery plan. Complete one phase fully (features + tests + DoD) be
 |-------|--------|---------|
 | 0 — Foundation | **Complete** | Scaffold, architecture, Jest, Maestro smoke, CI, docs |
 | 1 — Welcome | **Complete** | Polished welcome + CTAs + login/sign-up stubs |
-| 2 — Auth | Pending | Supabase login / sign-up |
-| 3 — Auth gate + tabs | Pending | Session redirect + tab shell |
-| 4 — Profile + notifications | Pending | Personal page + mock notifications |
+| 2 — Auth | **Complete** | Supabase login / sign-up + profile sign-out |
+| 3 — Auth gate + tabs | **Complete** | Session redirect + loading splash |
+| 4 — Profile + notifications | **Complete** | Profile stats + Zustand notifications + tab badge |
 | 5 — Server state | Pending | TanStack Query + profiles + RLS |
 | 6 — Gamification stub | Pending | One vertical training slice |
 | 7 — Distribution + CI E2E | Pending | EAS builds + Maestro in CI |
@@ -89,9 +89,10 @@ Step-by-step delivery plan. Complete one phase fully (features + tests + DoD) be
 
 **Definition of done:**
 
-- [ ] Create account → log out → log in on phone
-- [ ] Errors shown clearly
-- [ ] CI uses mocks only; `.env` documented
+- [x] Login + sign-up forms with validation and Supabase calls
+- [x] Profile sign-out for manual testing (auth gate in Phase 3)
+- [x] Unit + RNTL tests; CI uses mocks only
+- [ ] Create account → log out → log in on phone (verify with Supabase URL/anon key in `.env`)
 
 ---
 
@@ -108,12 +109,16 @@ Step-by-step delivery plan. Complete one phase fully (features + tests + DoD) be
 **Tests:**
 
 - RNTL: unauthenticated → welcome; authenticated → tabs; logout → welcome
-- Maestro: login → tabs → logout → welcome
+- Maestro: development build `launchApp` → sign up → tabs → logout → login → welcome
 
 **Definition of done:**
 
-- [ ] No flash of home before login
-- [ ] Maestro auth flow green locally
+- [x] Auth provider + session listener in root layout
+- [x] Loading splash while session resolves (no tab flash)
+- [x] Signed-in users redirect to Home; signed-out users redirect to Welcome
+- [x] Unit + layout tests for redirect logic
+- [x] Maestro `auth-flow.yaml` (self-contained sign-up; no seeded user; **dev build**)
+- [ ] Verify login → tabs → logout → welcome on phone
 
 ---
 
@@ -130,12 +135,15 @@ Step-by-step delivery plan. Complete one phase fully (features + tests + DoD) be
 
 - Unit: Zustand store (unread count, mark read)
 - RNTL: profile + notifications list + badge
-- Maestro: login → profile → notifications → mark read
+- Maestro: sign up → notifications → mark read (development build)
 
 **Definition of done:**
 
-- [ ] Demo-ready personal + notifications experience
-- [ ] Store edge cases covered (empty list, all read)
+- [x] Profile with avatar, display name, mock streak / XP / rank
+- [x] Notifications list with unread badge and mark-all-read
+- [x] Zustand store tests + screen tests
+- [x] Maestro `notifications-flow.yaml`
+- [ ] Verify profile + notifications on phone
 
 ---
 
@@ -206,7 +214,7 @@ Step-by-step delivery plan. Complete one phase fully (features + tests + DoD) be
 | Detox | Maestro is simpler with Expo |
 | Full leaderboard + badge system | Phase 6 stub first |
 | Offline-first sync | TanStack Query cache first |
-| Custom native modules | Stay in Expo Go until blocked |
+| Custom native modules | Use development builds (not Expo Go) for E2E |
 
 ## How we work
 

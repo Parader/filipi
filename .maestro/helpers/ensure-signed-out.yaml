@@ -1,0 +1,17 @@
+# If home is showing (leftover session), sign out to welcome.
+appId: com.filipiboats.app
+---
+- runFlow:
+    when:
+      visible:
+        id: "home-screen"
+    commands:
+      - tapOn: "Profile"
+      - assertVisible:
+          id: "profile-screen"
+      - tapOn:
+          id: "profile-sign-out-button"
+      - extendedWaitUntil:
+          visible:
+            id: "welcome-screen"
+          timeout: 30000

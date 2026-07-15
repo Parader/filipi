@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=fpcdqakekvqvgplsgoha"
+    },
+    "maestro": {
+      "command": "C:\\maestro\\bin\\maestro.bat",
+      "args": ["mcp"],
+      "env": {
+        "JAVA_HOME": "C:\\Program Files\\Android\\Android Studio\\jbr"
+      }
+    }
+  }
+}

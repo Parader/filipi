@@ -88,7 +88,7 @@ flowchart LR
 | `src/app/(public)/` | Welcome, login, sign-up — no auth required |
 | `src/app/(app)/` | Tab shell: Home, Profile, Notifications — behind auth from Phase 3 |
 
-**Phase 0 note:** Both groups exist as stubs. Root layout forces `initialRouteName="(public)"` so welcome is the default (otherwise `(app)` can win alphabetically and show tabs on some devices). Phase 3 locks `(app)` behind login.
+**Phase 3 note:** `AuthProvider` in `src/providers/auth-provider.tsx` listens to Supabase session state. Root layout shows a loading screen until the session is known, then redirects between `(public)` and `(app)`.
 
 ## Layer responsibilities
 

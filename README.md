@@ -5,10 +5,9 @@ Training app prototype with gamification — Expo + HeroUI Native + Supabase.
 ## Prerequisites
 
 - **Node.js 20.19+** (Expo SDK 54 / HeroUI Native)
-- **npm** (or another package manager)
-- **Expo Go** on your phone ([iOS](https://apps.apple.com/app/expo-go/id982107779) / [Android](https://play.google.com/store/apps/details?id=host.exp.exponent))
-
-> **Important:** The App Store / Play Store Expo Go app is currently **SDK 54**. This project targets SDK 54 so scanning the QR code works. Newer SDKs (55–57) need a matching Expo Go build or a development build.
+- **npm**
+- **Android Studio** (emulator + JDK) for local runs and Maestro E2E
+- Optional: Expo Go for quick UI checks only — **E2E uses a development build**
 
 ## Install
 
@@ -16,21 +15,36 @@ Training app prototype with gamification — Expo + HeroUI Native + Supabase.
 npm install
 ```
 
-Copy env placeholders (used from Phase 2 onward):
+Copy env placeholders:
 
 ```bash
 cp .env.example .env
+cp .env.maestro.example .env.maestro
 ```
 
-## Run
+Fill `.env` from your [Supabase](https://supabase.com) project → **Project Settings → API**:
+- `EXPO_PUBLIC_SUPABASE_URL` — Project URL
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY` — anon public key
+
+## Run (development build)
+
+First install (compiles native project — slow once):
 
 ```bash
-npm start
+npm run android:device
 ```
 
-Scan the QR code with Expo Go. Edit files under `src/app/` and watch them reload.
+If Gradle reports `JAVA_HOME is not set`, either reopen the terminal after `npm run setup:java`, or the `android:device` script sets Java automatically.
 
-This project targets **Expo SDK 54**, which matches the Expo Go app currently on the App Store / Play Store.
+Then day-to-day:
+
+```bash
+npm run start:dev
+```
+
+Press `a` to open the installed `com.filipiboats.app` build, or reopen the app on the emulator.
+
+> Expo Go still works for casual checks (`npm start` + scan QR), but Maestro E2E requires the development build.
 
 ## Quality checks
 
@@ -40,6 +54,16 @@ npm run typecheck
 npm test
 npm run test:ci
 ```
+
+### Maestro E2E (Android emulator)
+
+```bash
+npm run start:dev          # terminal A
+npm run e2e:prep           # terminal B — adb reverse
+npm run test:e2e:smoke
+```
+
+See [docs/TESTING.md](docs/TESTING.md) for the full E2E setup.
 
 ## Docs
 

@@ -16,6 +16,7 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@/assets/(.*)$": "<rootDir>/assets/$1",
+    "\\.(css)$": "<rootDir>/__mocks__/styleMock.js",
   },
   testPathIgnorePatterns: ["/node_modules/", "/.expo/", "/e2e/"],
 };

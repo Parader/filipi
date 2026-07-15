@@ -1,0 +1,6 @@
+# Shared Maestro workspace defaults (development build — not Expo Go).
+appId: com.filipiboats.app
+name: Filipi Boats
+flows:
+  - "*"
+  - "helpers/*"

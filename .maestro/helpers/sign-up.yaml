@@ -1,0 +1,26 @@
+# Creates a unique account each run — no pre-seeded test user.
+# Supabase Confirm email must be OFF so sign-up returns a session.
+appId: com.filipiboats.app
+---
+- evalScript: ${output.e2eEmail = 'e2e+' + Date.now() + '@filipiboats.test'}
+- evalScript: ${output.e2ePassword = 'TestPass123!'}
+- tapOn:
+    id: "welcome-get-started-button"
+- assertVisible:
+    id: "sign-up-screen"
+- tapOn:
+    id: "sign-up-email-input"
+- inputText: ${output.e2eEmail}
+- tapOn:
+    id: "sign-up-password-input"
+- inputText: ${output.e2ePassword}
+- tapOn:
+    id: "sign-up-confirm-password-input"
+- inputText: ${output.e2ePassword}
+- tapOn: "Join Filipi Boats and start your training journey."
+- tapOn:
+    id: "sign-up-submit-button"
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000

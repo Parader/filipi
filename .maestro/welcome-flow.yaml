@@ -1,12 +1,9 @@
-# Expo Go while `npx expo start` is running.
-appId: host.exp.exponent
+# Welcome → Log in screen.
+appId: com.filipiboats.app
 ---
-- launchApp
+- runFlow: helpers/open-app.yaml
 - assertVisible:
     id: "welcome-screen"
-- assertVisible: "Filipi Boats"
-- assertVisible:
-    id: "welcome-login-button"
 - tapOn:
     id: "welcome-login-button"
 - assertVisible:
